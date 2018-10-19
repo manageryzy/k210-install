@@ -102,7 +102,7 @@ install_openocd()
     sed -i -e 's/jlink serial .*//g' $OPENOCD_DIR/tcl/openocd.cfg
 
     if grep -q Microsoft /proc/version; then
-        MSG="Run 'zadig-2.4.exe' in 'tool/', 'Options' -> 'List all devices', select your JTAG simulator and convert the vendor drivers to WinUSB drivers."
+        MSG="Run 'zadig-2.4.exe' in 'tool/', 'Options' - 'List all devices', select your JTAG simulator and convert the vendor drivers to WinUSB drivers."
         cmd.exe /C "msg %username% $MSG"
         echo $MSG
         cp $OPENOCD_DIR/tool/zadig-2.4.exe $TMP_DIR
@@ -185,11 +185,14 @@ alias k210gdb='riscv64-unknown-elf-gdb --eval-command=\"target remote localhost:
 alias k210openocd='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG $CMD_RAPPER_2'
 alias k210openocd-m0='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG -m0 $CMD_RAPPER_2'
 alias k210openocd-m1='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG -m1 $CMD_RAPPER_2'
+alias k210freertos-cmake='cmake -DSDK_ROOT=\$FREERTOS_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
+alias k210standalone-cmake='cmake -DSDK_ROOT=\$STANDALONE_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
+
 export FREERTOS_SDK_DIR=$FREERTOS_SDK_DIR
 export STANDALONE_SDK_DIR=$STANDALONE_SDK_DIR
 export K210_TOOLCHAIN=$TOOLCHAIN_DIR/bin
 
-echo 'run cmake '
+echo 'k210 env setup'
 " > $INSTALL_PREFIX/ENV
 chmod +x $INSTALL_PREFIX/ENV
 
