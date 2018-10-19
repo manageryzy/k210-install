@@ -187,6 +187,7 @@ alias k210openocd-m0='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG -m0 $CMD_RAPPER
 alias k210openocd-m1='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG -m1 $CMD_RAPPER_2'
 alias k210freertos-cmake='cmake -DSDK_ROOT=\$FREERTOS_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
 alias k210standalone-cmake='cmake -DSDK_ROOT=\$STANDALONE_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
+alias k210cmake='cp $INSTALL_PREFIX/CMakeLists_DEMO.txt CMakeLists.txt'
 
 export FREERTOS_SDK_DIR=$FREERTOS_SDK_DIR
 export STANDALONE_SDK_DIR=$STANDALONE_SDK_DIR
@@ -195,6 +196,27 @@ export K210_TOOLCHAIN=$TOOLCHAIN_DIR/bin
 echo 'k210 env setup'
 " > $INSTALL_PREFIX/ENV
 chmod +x $INSTALL_PREFIX/ENV
+
+echo "cmake_minimum_required(VERSION 3.0)
+
+set(BUILDING_SDK \"yes\" CACHE INTERNAL \"\")
+
+include(\${SDK_ROOT}/cmake/common.cmake)
+project(k210-test)
+
+# config self use headers
+include(\${SDK_ROOT}/cmake/macros.internal.cmake)
+INCLUDE_DIRECTORIES(\${SDK_ROOT}/lib/arch/include \${SDK_ROOT}/lib/utils/include)
+header_directories(\${SDK_ROOT}/lib)
+
+# build library first
+add_subdirectory(\${SDK_ROOT}/lib lib)
+
+
+# compile project
+add_source_files(src/*.c src/*.s src/*.S src/*.cpp)
+include(\${SDK_ROOT}/cmake/executable.cmake)
+" > CMakeLists_DEMO.txt
 
 
 test_toolchain()
@@ -216,26 +238,8 @@ int main()
     return 0;
 }
 " > src/main.c
-echo "cmake_minimum_required(VERSION 3.0)
 
-set(BUILDING_SDK \"yes\" CACHE INTERNAL \"\")
-
-include(\${SDK_ROOT}/cmake/common.cmake)
-project(k210-test)
-
-# config self use headers
-include(\${SDK_ROOT}/cmake/macros.internal.cmake)
-INCLUDE_DIRECTORIES(\${SDK_ROOT}/lib/arch/include \${SDK_ROOT}/lib/utils/include)
-header_directories(\${SDK_ROOT}/lib)
-
-# build library first
-add_subdirectory(\${SDK_ROOT}/lib lib)
-
-
-# compile project
-add_source_files(src/*.c src/*.s src/*.S src/*.cpp)
-include(\${SDK_ROOT}/cmake/executable.cmake)
-" > CMakeLists.txt
+cp $INSTALL_PREFIX/CMakeLists_DEMO.txt CMakeLists.txt
 
 cd $TEST_PREFIX
 
