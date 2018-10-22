@@ -61,10 +61,13 @@ STANDALONE_SDK_PKG="${INSTALL_PREFIX}/kendryte-standalone-sdk.zip"
 OPENOCD_PKG="${INSTALL_PREFIX}/kendryte-openocd-${OPENOCD_VER}.tar.gz"
 TOOLCHAIN_PKG="${INSTALL_PREFIX}/kendryte-toolchain.tar.gz"
 
+
 FREERTOS_SDK_DIR="${INSTALL_PREFIX}/kendryte-freertos-sdk"
 STANDALONE_SDK_DIR="${INSTALL_PREFIX}/kendryte-standalone-sdk"
 OPENOCD_DIR="${INSTALL_PREFIX}/kendryte-openocd"
 TOOLCHAIN_DIR="${INSTALL_PREFIX}/kendryte-toolchain"
+FREERTOS_DEMO_DIR="${INSTALL_PREFIX}/kendryte-freertos-demo"
+STANDALONE_DEMO_DIR="${INSTALL_PREFIX}/kendryte-standalone-demo"
 
 
 if grep -q Microsoft /proc/version; then
@@ -96,7 +99,8 @@ FREERTOS_SDK_LINK="https://github.com/kendryte/kendryte-freertos-sdk/archive/mas
 STANDALONE_SDK_LINK="https://github.com/kendryte/kendryte-standalone-sdk/archive/master.zip"
 OPENOCD_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-openocd-${OPENOCD_VER}-${OPENOCD_SERVER_NAME}"
 TOOLCHAIN_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-toolchain.tar.gz"
-
+FREERTOS_DEMO_REPO="https://github.com/kendryte/kendryte-freertos-demo.git"
+STANDALONE_DEMO_REPO="https://github.com/kendryte/kendryte-standalone-demo.git"
 
 
 test_exist()
@@ -166,11 +170,43 @@ install_toolchain()
     rm -rf $TOOLCHAIN_PKG
 }
 
+install_freertos_demo()
+{
+    ORI_PWD=$(pwd)
+    if [ -d "${FREERTOS_DEMO_DIR}" ]; then
+        cd ${FREERTOS_DEMO_DIR}
+        git reset --hard
+        git clean -fxd
+        git fetch
+        git checkout origin/master
+        cd $ORI_PWD
+    else
+        git clone ${FREERTOS_DEMO_REPO} ${FREERTOS_DEMO_DIR}
+    fi
+}
+
+install_standalone_demo()
+{
+    ORI_PWD=$(pwd)
+    if [ -d "${STANDALONE_DEMO_DIR}" ]; then
+        cd ${STANDALONE_DEMO_DIR}
+        git reset --hard
+        git clean -fxd
+        git fetch
+        git checkout origin/master
+        cd $ORI_PWD
+    else
+        git clone ${STANDALONE_DEMO_REPO} ${STANDALONE_DEMO_DIR}
+    fi
+}
+
+
 
 test_exist "tar"
 test_exist "wget"
 test_exist "unzip"
 test_exist "cmake"
+test_exist "git"
 
 if [  -d "$FREERTOS_SDK_DIR" ]; then
 read -r -p "reinstall freertos [y/N] " response
@@ -226,6 +262,8 @@ else
     install_toolchain
 fi
 
+install_freertos_demo
+install_standalone_demo
 
 echo "#!/bin/bash
 export PATH=$INSTALL_PREFIX/kendryte-openocd/bin:$INSTALL_PREFIX/kendryte-toolchain/bin:\$PATH
@@ -322,8 +360,8 @@ k210openocd - openocd without -mn param
 k210openocd-m0 - openocd with -m0 param
 k210openocd-m1 - openocd with -m1 param
 
-you can run 'cmake -DSDK_ROOT=\$FREERTOS_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
+you can run 'cmake -DSDK_ROOT=\$FREERTOS_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN'
 or
-'cmake -DSDK_ROOT=\$STANDALONE_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
+'cmake -DSDK_ROOT=\$STANDALONE_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN'
 in test dir
 "
