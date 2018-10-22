@@ -26,7 +26,32 @@ if [ ! -G "$INSTALL_PREFIX" ]; then
     exit -1
 fi
 
-TEST_PREFIX="${TEST_PREFIX:-$(pwd)}"
+read -r -p "TEST_PREFIX:($(pwd)) " response
+if [ -z "$response" ]
+then
+    TEST_PREFIX=$(pwd)
+else
+    TEST_PREFIX=$response
+fi
+
+if [ ! -d "$TEST_PREFIX" ]; then
+    echo "$TEST_PREFIX do not exist!"
+    exit -1
+fi
+
+TEST_PREFIX=$TEST_PREFIX/test
+
+if [ -e "$TEST_PREFIX" ]; then
+    echo "$TEST_PREFIX exist!"
+else
+    mkdir $TEST_PREFIX
+fi
+
+if [ ! -G "$TEST_PREFIX" ]; then
+    echo "please check you have right to write $TEST_PREFIX "
+    exit -1
+fi
+
 
 OPENOCD_VER="0.1.3"
 
