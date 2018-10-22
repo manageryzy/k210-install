@@ -3,13 +3,11 @@
 INSTALL_PREFIX="${INSTALL_PREFIX:-$(pwd)}"
 TEST_PREFIX="${TEST_PREFIX:-$(pwd)}"
 
-FREERTOS_SDK_VER="0.4.0"
-STANDALONE_SDK_VER="0.3.1"
 OPENOCD_VER="0.1.3"
 
 
-FREERTOS_SDK_PKG="${INSTALL_PREFIX}/kendryte-freertos-sdk-${FREERTOS_SDK_VER}.zip"
-STANDALONE_SDK_PKG="${INSTALL_PREFIX}/kendryte-standalone-sdk-${STANDALONE_SDK_VER}.zip"
+FREERTOS_SDK_PKG="${INSTALL_PREFIX}/kendryte-freertos-sdk.zip"
+STANDALONE_SDK_PKG="${INSTALL_PREFIX}/kendryte-standalone-sdk.zip"
 OPENOCD_PKG="${INSTALL_PREFIX}/kendryte-openocd-${OPENOCD_VER}.tar.gz"
 TOOLCHAIN_PKG="${INSTALL_PREFIX}/kendryte-toolchain.tar.gz"
 
@@ -44,8 +42,8 @@ else
 fi
 
 
-FREERTOS_SDK_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-freertos-sdk-${FREERTOS_SDK_VER}.zip"
-STANDALONE_SDK_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-standalone-sdk-${STANDALONE_SDK_VER}.zip"
+FREERTOS_SDK_LINK="https://github.com/kendryte/kendryte-freertos-sdk/archive/master.zip"
+STANDALONE_SDK_LINK="https://github.com/kendryte/kendryte-standalone-sdk/archive/master.zip"
 OPENOCD_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-openocd-${OPENOCD_VER}-${OPENOCD_SERVER_NAME}"
 TOOLCHAIN_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-toolchain.tar.gz"
 
@@ -73,7 +71,7 @@ install_freertos()
 {
     download $FREERTOS_SDK_LINK $FREERTOS_SDK_PKG
     unzip -qq $FREERTOS_SDK_PKG -d $INSTALL_PREFIX
-    ln -s -f $FREERTOS_SDK_DIR-$FREERTOS_SDK_VER $FREERTOS_SDK_DIR
+    mv -f $FREERTOS_SDK_DIR-master $FREERTOS_SDK_DIR
     rm -f $FREERTOS_SDK_PKG
 }
 
@@ -81,7 +79,7 @@ install_standalone()
 {
     download $STANDALONE_SDK_LINK $STANDALONE_SDK_PKG
     unzip -qq $STANDALONE_SDK_PKG -d $INSTALL_PREFIX
-    ln -s -f $STANDALONE_SDK_DIR-$STANDALONE_SDK_VER $STANDALONE_SDK_DIR
+    mv -f $STANDALONE_SDK_DIR-master $STANDALONE_SDK_DIR
     rm -f $STANDALONE_SDK_PKG
 }
 
@@ -185,7 +183,7 @@ alias k210gdb='riscv64-unknown-elf-gdb --eval-command=\"target remote localhost:
 alias k210openocd='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG $CMD_RAPPER_2'
 alias k210openocd-m0='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG -m0 $CMD_RAPPER_2'
 alias k210openocd-m1='$CMD_RAPPER_1$OPENOCD_EXEC -f $OPENOCD_CFG -m1 $CMD_RAPPER_2'
-alias k210freertos-cmake='cmake -DSDK_ROOT=\$FREERTOS_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN/'
+alias k210freertos-cmake='cmake -DSDK_ROOT=\$FREERTOS_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN'
 alias k210standalone-cmake='cmake -DSDK_ROOT=\$STANDALONE_SDK_DIR -DTOOLCHAIN=\$K210_TOOLCHAIN'
 alias k210cmake='cp $INSTALL_PREFIX/CMakeLists_DEMO.txt CMakeLists.txt'
 
@@ -246,7 +244,7 @@ cd $TEST_PREFIX
 cp -rf freertos-test standalone-test
 
 cd ./freertos-test/build
-cmake -DSDK_ROOT=$FREERTOS_SDK_DIR -DTOOLCHAIN=$K210_TOOLCHAIN/ ..
+cmake -DSDK_ROOT=$FREERTOS_SDK_DIR -DTOOLCHAIN=$K210_TOOLCHAIN ..
 make
 
 cd $TEST_PREFIX

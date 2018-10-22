@@ -58,3 +58,4 @@ freertos-test
 standalone-test
 kendryte-*
 ENV
+CMakeLists_DEMO.txt
