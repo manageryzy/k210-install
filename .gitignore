@@ -56,6 +56,6 @@ $RECYCLE.BIN/
 
 freertos-test
 standalone-test
-kendryte-*
+kendryte*
 ENV
 CMakeLists_DEMO.txt

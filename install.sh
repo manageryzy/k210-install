@@ -1,6 +1,31 @@
 #!/bin/bash
 
-INSTALL_PREFIX="${INSTALL_PREFIX:-$(pwd)}"
+read -r -p "INSTALL_PREFIX:($(pwd)) " response
+if [ -z "$response" ]
+then
+    INSTALL_PREFIX=$(pwd)
+else
+    INSTALL_PREFIX=$response
+fi
+
+if [ ! -d "$INSTALL_PREFIX" ]; then
+    echo "$INSTALL_PREFIX do not exist!"
+    exit -1
+fi
+
+INSTALL_PREFIX=$INSTALL_PREFIX/kendryte
+
+if [ -e "$INSTALL_PREFIX" ]; then
+    echo "$INSTALL_PREFIX exist!"
+else
+    mkdir $INSTALL_PREFIX
+fi
+
+if [ ! -G "$INSTALL_PREFIX" ]; then
+    echo "please check you have right to write $INSTALL_PREFIX "
+    exit -1
+fi
+
 TEST_PREFIX="${TEST_PREFIX:-$(pwd)}"
 
 OPENOCD_VER="0.1.3"
@@ -214,12 +239,12 @@ add_subdirectory(\${SDK_ROOT}/lib lib)
 # compile project
 add_source_files(src/*.c src/*.s src/*.S src/*.cpp)
 include(\${SDK_ROOT}/cmake/executable.cmake)
-" > CMakeLists_DEMO.txt
+" > $INSTALL_PREFIX/CMakeLists_DEMO.txt
 
 
 test_toolchain()
 {
-source ENV
+source $INSTALL_PREFIX/ENV
 echo $TEST_PREFIX
 
 cd $TEST_PREFIX
