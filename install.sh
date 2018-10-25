@@ -125,6 +125,9 @@ install_freertos()
 {
     download $FREERTOS_SDK_LINK $FREERTOS_SDK_PKG
     unzip -qq $FREERTOS_SDK_PKG -d $INSTALL_PREFIX
+    if [ -d $FREERTOS_SDK_DIR ] ; then
+        rm -rf $FREERTOS_SDK_DIR
+    fi
     mv -f $FREERTOS_SDK_DIR-master $FREERTOS_SDK_DIR
     rm -f $FREERTOS_SDK_PKG
 }
@@ -133,6 +136,9 @@ install_standalone()
 {
     download $STANDALONE_SDK_LINK $STANDALONE_SDK_PKG
     unzip -qq $STANDALONE_SDK_PKG -d $INSTALL_PREFIX
+    if [ -d $STANDALONE_SDK_DIR ] ; then
+        rm -rf $STANDALONE_SDK_DIR
+    fi
     mv -f $STANDALONE_SDK_DIR-master $STANDALONE_SDK_DIR
     rm -f $STANDALONE_SDK_PKG
 }
