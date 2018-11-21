@@ -311,6 +311,9 @@ header_directories(\${SDK_ROOT}/lib)
 
 # build library first
 add_subdirectory(\${SDK_ROOT}/lib lib)
+IF(EXISTS \${SDK_ROOT}/third_party)
+add_subdirectory(\${SDK_ROOT}/third_party third_party)
+ENDIF()
 
 
 # compile project
