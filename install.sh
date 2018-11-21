@@ -98,7 +98,7 @@ fi
 FREERTOS_SDK_REPO="https://github.com/kendryte/kendryte-freertos-sdk.git"
 STANDALONE_SDK_REPO="https://github.com/kendryte/kendryte-standalone-sdk.git"
 OPENOCD_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-openocd-${OPENOCD_VER}-${OPENOCD_SERVER_NAME}"
-TOOLCHAIN_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-toolchain.tar.gz"
+TOOLCHAIN_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-toolchain-ubuntu-amd64-8.2.0.tar.gz"
 FREERTOS_DEMO_REPO="https://github.com/kendryte/kendryte-freertos-demo.git"
 STANDALONE_DEMO_REPO="https://github.com/kendryte/kendryte-standalone-demo.git"
 
