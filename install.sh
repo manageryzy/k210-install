@@ -95,8 +95,8 @@ else
 fi
 
 
-FREERTOS_SDK_LINK="https://github.com/kendryte/kendryte-freertos-sdk/archive/master.zip"
-STANDALONE_SDK_LINK="https://github.com/kendryte/kendryte-standalone-sdk/archive/master.zip"
+FREERTOS_SDK_REPO="https://github.com/kendryte/kendryte-freertos-sdk.git"
+STANDALONE_SDK_REPO="https://github.com/kendryte/kendryte-standalone-sdk.git"
 OPENOCD_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-openocd-${OPENOCD_VER}-${OPENOCD_SERVER_NAME}"
 TOOLCHAIN_LINK="https://s3.cn-north-1.amazonaws.com.cn/dl.kendryte.com/documents/kendryte-toolchain.tar.gz"
 FREERTOS_DEMO_REPO="https://github.com/kendryte/kendryte-freertos-demo.git"
@@ -123,24 +123,32 @@ download()
 
 install_freertos()
 {
-    download $FREERTOS_SDK_LINK $FREERTOS_SDK_PKG
-    unzip -qq $FREERTOS_SDK_PKG -d $INSTALL_PREFIX
-    if [ -d $FREERTOS_SDK_DIR ] ; then
-        rm -rf $FREERTOS_SDK_DIR
+    ORI_PWD=$(pwd)
+    if [ -d "${FREERTOS_SDK_DIR}" ]; then
+        cd ${FREERTOS_SDK_DIR}
+        git reset --hard
+        git clean -fxd
+        git fetch
+        git checkout origin/master
+        cd $ORI_PWD
+    else
+        git clone ${FREERTOS_SDK_REPO} ${FREERTOS_SDK_DIR}
     fi
-    mv -f $FREERTOS_SDK_DIR-master $FREERTOS_SDK_DIR
-    rm -f $FREERTOS_SDK_PKG
 }
 
 install_standalone()
 {
-    download $STANDALONE_SDK_LINK $STANDALONE_SDK_PKG
-    unzip -qq $STANDALONE_SDK_PKG -d $INSTALL_PREFIX
-    if [ -d $STANDALONE_SDK_DIR ] ; then
-        rm -rf $STANDALONE_SDK_DIR
+    ORI_PWD=$(pwd)
+    if [ -d "${STANDALONE_SDK_DIR}" ]; then
+        cd ${STANDALONE_SDK_DIR}
+        git reset --hard
+        git clean -fxd
+        git fetch
+        git checkout origin/master
+        cd $ORI_PWD
+    else
+        git clone ${STANDALONE_SDK_REPO} ${STANDALONE_SDK_DIR}
     fi
-    mv -f $STANDALONE_SDK_DIR-master $STANDALONE_SDK_DIR
-    rm -f $STANDALONE_SDK_PKG
 }
 
 install_openocd()
