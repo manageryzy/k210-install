@@ -357,20 +357,23 @@ cd $TEST_PREFIX
 
 cp -rf freertos-test standalone-test
 
-cp -f $INSTALL_PREFIX/CMakeLists_DEMO.txt CMakeLists.txt
-# TODO: fix it after sdk change
+cd standalone-test
 
-# for i in $INSTALL_PREFIX/kendryte-standalone-demo/* ; do
-#   if [ -d "$i" ]; then
-#     PROJ=$(basename "$i")
-#     echo "project($PROJ)
-# # compile project $PROJ
-# unset(SOURCE_FILES CACHE)
-# add_source_files($STANDALONE_DEMO_DIR/$PROJ/*.c $STANDALONE_DEMO_DIR/$PROJ/*.s $STANDALONE_DEMO_DIR/$PROJ/*.S $STANDALONE_DEMO_DIR/$PROJ/*.cpp)
-# include(\${SDK_ROOT}/cmake/executable.cmake)
-# " >> standalone-test/CMakeLists.txt
-#   fi
-# done
+cp -f $INSTALL_PREFIX/CMakeLists_DEMO.txt CMakeLists.txt
+
+for i in $INSTALL_PREFIX/kendryte-standalone-demo/* ; do
+  if [ -d "$i" ]; then
+    PROJ=$(basename "$i")
+    echo "project($PROJ)
+# compile project $PROJ
+unset(SOURCE_FILES CACHE)
+add_source_files($STANDALONE_DEMO_DIR/$PROJ/*.c $STANDALONE_DEMO_DIR/$PROJ/*.s $STANDALONE_DEMO_DIR/$PROJ/*.S $STANDALONE_DEMO_DIR/$PROJ/*.cpp)
+include(\${SDK_ROOT}/cmake/executable.cmake)
+" >> CMakeLists.txt
+  fi
+done
+
+cd ..
 
 cd ./freertos-test/build
 cmake -DSDK_ROOT=$FREERTOS_SDK_DIR -DTOOLCHAIN=$K210_TOOLCHAIN ..
